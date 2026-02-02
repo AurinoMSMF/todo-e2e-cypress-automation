@@ -1,5 +1,9 @@
 {
   "devDependencies": {
     "cypress": "^15.9.0"
+  },
+  "scripts": {
+    "test:e2e:headless": "cypress run",
+    "test:e2e:open": "cypress open"
   }
 }
