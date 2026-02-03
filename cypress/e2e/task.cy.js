@@ -1,6 +1,5 @@
-const baseURL = "react-to-do-five-rho.vercel.app";
-const taskTitle = `Test task ${Date.now()}`;
-const taskDescription = `${"Lorem dolor sit amet"}`;
+let taskTitle;
+let taskDescription;
 
 const selectors = {
   taskList: "[data-test='tasks-list']",
@@ -13,19 +12,28 @@ const selectors = {
   taskDetailsGoBackButton: "[data-test='task-details-goback-button']",
 };
 
-const createTestTask = () => {
+const createTestTaskViaUI = () => {
+  const timestamp = Date.now();
+  taskTitle = `Test task ${timestamp}`;
+  taskDescription = `Lorem dolor sit amet ${timestamp}`;
   cy.get("[data-test='task-title-input']").type(taskTitle);
   cy.get("[data-test='task-description-textarea']").type(taskDescription);
   cy.get("[data-test='task-creation-button']").click();
 };
 
-describe("Teste E2E React-to-do", () => {
-  it("Realiza a criação de uma tarefa", () => {
-    // Arrange
-    cy.visit(baseURL);
+const createTaskAsPrecondition = () => {
+  createTestTaskViaUI();
+};
 
+describe("Criação de tarefa", () => {
+  beforeEach(() => {
+    // Arrange
+    cy.visit("/");
+  });
+
+  it("Realiza a criação de uma tarefa", () => {
     // Act
-    createTestTask();
+    createTestTaskViaUI();
 
     // Assert
     cy.get(selectors.taskList)
@@ -33,12 +41,16 @@ describe("Teste E2E React-to-do", () => {
       .and("have.descendants", "li");
     cy.get(selectors.testTask).contains(taskTitle).should("exist");
   });
+});
+
+describe("Com tarefa existente", () => {
+  beforeEach(() => {
+    // Arrange
+    cy.visit("/");
+    createTaskAsPrecondition();
+  });
 
   it("Permite a visualização dos detalhes de uma tarefa e retorno a página principal", () => {
-    // Arrange
-    cy.visit(baseURL);
-    createTestTask();
-
     // Act
     cy.get(selectors.testTask).contains(taskTitle).should("exist");
     cy.contains(selectors.testTask, taskTitle)
@@ -51,7 +63,6 @@ describe("Teste E2E React-to-do", () => {
     searchParams.set("title", taskTitle);
     searchParams.set("description", taskDescription);
 
-    cy.location("hostname").should("eq", baseURL);
     cy.location("pathname").should("eq", "/task-details");
     cy.location("search").should("eq", `?${searchParams.toString()}`);
     cy.get(selectors.taskDetailsTitle).contains(taskTitle).should("exist");
@@ -62,14 +73,10 @@ describe("Teste E2E React-to-do", () => {
 
     cy.get(selectors.taskDetailsGoBackButton).should("be.visible").click();
 
-    cy.location("hostname").should("eq", baseURL);
+    cy.location("pathname").should("eq", "/");
   });
 
   it("Conclui a tarefa ao clicar sobre o título", () => {
-    // Arrange
-    cy.visit(baseURL);
-    createTestTask();
-
     // Act
     cy.get(selectors.testTask).contains(taskTitle).should("exist");
     cy.contains(selectors.testTask, taskTitle)
@@ -84,10 +91,6 @@ describe("Teste E2E React-to-do", () => {
   });
 
   it("Exclui a tarefa", () => {
-    // Arrange
-    cy.visit(baseURL);
-    createTestTask();
-
     // Act
     cy.get(selectors.testTask).contains(taskTitle).should("exist");
     cy.contains(selectors.testTask, taskTitle)
