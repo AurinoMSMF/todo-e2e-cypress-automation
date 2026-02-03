@@ -40,6 +40,8 @@ describe("Criação de tarefa", () => {
       .should("be.visible")
       .and("have.descendants", "li");
     cy.get(selectors.testTask).contains(taskTitle).should("exist");
+
+    cy.screenshot("tarefa_criada");
   });
 });
 
@@ -71,9 +73,13 @@ describe("Com tarefa existente", () => {
       .contains(taskDescription)
       .should("exist");
 
+    cy.screenshot("detalhes_da_tarefa");
+
     cy.get(selectors.taskDetailsGoBackButton).should("be.visible").click();
 
     cy.location("pathname").should("eq", "/");
+
+    cy.screenshot("retorno_pagina_principal");
   });
 
   it("Conclui a tarefa ao clicar sobre o título", () => {
@@ -88,6 +94,8 @@ describe("Com tarefa existente", () => {
     cy.contains(selectors.testTask, taskTitle)
       .find(selectors.taskTitleButton)
       .should("have.class", "line-through");
+
+    cy.screenshot("tarefa_concluida");
   });
 
   it("Exclui a tarefa", () => {
@@ -100,5 +108,7 @@ describe("Com tarefa existente", () => {
 
     // Assert
     cy.contains(selectors.testTask, taskTitle).should("not.exist");
+
+    cy.screenshot("tarefa_excluida");
   });
 });
