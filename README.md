@@ -83,6 +83,18 @@ README.md
 
 `npm run test:e2e:headless`
 
+## 🔄 Integração Contínua (CI)
+
+Este projeto possui pipeline de **Integração Contínua** configurada com **GitHub Actions**.
+
+A cada push no repositório, os testes E2E são executados automaticamente contra a aplicação publicada na Vercel, validando o fluxo crítico E2E em ambiente real.
+
+### Pipeline
+
+- Instala dependências
+- Executa testes Cypress em modo headless
+- Testa a aplicação publicada na Vercel
+
 ## 🧠 Boas práticas aplicadas
 
 - Utilização de seletores dedicados (`data-test`) para maior estabilidade dos testes
