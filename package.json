@@ -1,6 +1,6 @@
 {
   "devDependencies": {
-    "cypress": "^15.9.0"
+    "cypress": "^15.10.0"
   },
   "scripts": {
     "test:e2e:headless": "cypress run",
